@@ -26,6 +26,8 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-jose'
     implementation 'org.springframework.security:spring-security-config'
 
+    implementation 'com.mashape.unirest:unirest-java:1.4.9'
+
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

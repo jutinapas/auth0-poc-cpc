@@ -1,7 +1,12 @@
 package com.auth0.example.web;
 
 import com.auth0.example.model.Message;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +30,25 @@ public class APIController {
     @GetMapping(value = "/private")
     public Message privateEndpoint() {
         return new Message("All good. You can see this because you are Authenticated.");
+    }
+
+    @GetMapping(value = "/external")
+    public Message externalEndpoint() {
+        return new Message("All good. You can see this because you are Authenticated.");
+    }
+
+    @GetMapping(value = "/data")
+    public Message dataEndpoint(@AuthenticationPrincipal Jwt principal) throws UnirestException {
+        // access token to be reuse
+        String accessToken = principal.getTokenValue();
+
+        // call to pds with current accessToken
+        HttpResponse<String> response = Unirest.get("some localhost with port for pds")
+            .header("authorization", "Bearer " + accessToken)
+            .asString();
+
+        // return response from pds
+        return new Message("Data from PDS is: " + response.toString());
     }
 
     @GetMapping(value = "/private-scoped")
